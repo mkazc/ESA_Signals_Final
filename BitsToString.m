@@ -5,7 +5,7 @@
 
 function res = BitsToStrings(binary)
 string = '';
-sz_binary = length(binary);
+sz_binary = length(binary)
 binary_chars = reshape(binary, sz_binary/8, 8);
 binary_chars = binary_chars*2.^([7:-1:0]');
 string = char(binary_chars); %turns it back into ascii
