@@ -1,7 +1,7 @@
-function [] = SerialRX(Fs, f_c, SymbolPeriod, duration)
+function [] = SerialRX(Fs, f_c, SymbolPeriod, duration, characters)
 load sync_noise.mat x_sync % get the sync signal
 % record microphone
-recObj = audiorecorder(Fs);
+recObj = audiorecorder(Fs,8,1,-1);
 recordblocking(recObj, duration);
 y_r = getaudiodata(recObj);
 
@@ -46,10 +46,20 @@ for i=1:sz
     bits(i) = mean(y_filtered(start:cend));
 end
 bits_raw = bits;
+nbits = bits < 0;
 bits = bits > 0;
 
+% make to 8 bits divisible
+bits_div = mod(length(bits),8)
+bits = bits(1:end-bits_div);
+nbits = nbits(1:end-bits_div);
+
+
 % with serial we can expect gibberish at the end, but that's OK!
-SerialBitsToString(bits);
+s = SerialBitsToString(bits)
+s(1:characters)
+sr = SerialBitsToString(nbits)
+sr(1:characters)
 end
 
 
